@@ -9,8 +9,8 @@ use Cwd;
 $_REPL->load_plugin('DumpHistory');
 
 my $semester='052';
-my $school='nuu';
-my $league='FLA0010';
+my $school='must';
+my $league='KA2';
 
 use Grades;
 use Grades::Groupwork;
@@ -36,9 +36,9 @@ for my $id ( sort keys %m ) {
 	my $username = $lower_id;
 	my $lastname = $id;
 	my $firstname =$m{$id}->{name};
-	my $email = $username . "\@smail.nuu.edu.tw";
+	my $email = $username . "\@smail.must.edu.tw";
 	my $password = $m{$id}->{password};
-	my $city = "Miaoli";
+	my $city = "Hsinchu";
 	system("Moosh user-create --password $password --email $email --city $city --country TW --firstname $firstname --lastname $id $username");
 }
 
