@@ -9,8 +9,8 @@ use Cwd;
 $_REPL->load_plugin('DumpHistory');
 
 my $semester='052';
-my $school='nuu';
-my $league='FLA0010';
+my $school='must';
+my $league='KA2';
 
 use Grades;
 use Grades::Groupwork;
@@ -31,15 +31,16 @@ my $approach = $l->approach;
 my $cohort_name = $league;
 my $header = join "\t", ( qw/username lastname firstname email password cohort1/ );
 my @cohort = ( $header );
-for my $id ( 154 .. 184 ) {
+my @member = values %m;
+for my $id ( keys %m ) {
 	my $lower_id = lcfirst $id;
 	my $username = $lower_id;
 	my $lastname = $id;
 	my $firstname =$m{$id}->{name};
-	my $email = $username . "\@smail.nuu.edu.tw";
+	my $email = $m{$id}->{email};
 	my $password = $m{$id}->{password};
-	my $city = "Miaoli";
-	system("Moosh user-mod -i --firstname $firstname $id");
+	my $city = "Hsinchu";
+	system("Moosh user-mod --email $email $lower_id");
 }
 
 
