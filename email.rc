@@ -1,0 +1,31 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use IO::All;
+use YAML::XS qw/LoadFile DumpFile/;
+use Cwd;
+
+$_REPL->load_plugin('DumpHistory');
+
+(my $dir = getcwd) =~ s/^.*\/([^\/]*)$/$1/;
+use Grades;
+use Grades::Groupwork;
+my $l = League->new( leagues => '/home/drbean/052', id => $dir );
+my $g = Grades->new({ league => $l });
+my $co = Compcomp->new({ league => $l });
+my $cl = $g->classwork;
+my %m = map { $_->{id} => $_ } @{ $l->members };
+my $approach = $l->approach;
+
+my $e = LoadFile 'email.yaml';
+my $dupe = grep { exists $e->{$_} } keys %m;
+$m{$_}->{email} = $e->{$_} for (keys %m) ;
+scalar keys %m;
+$dupe;
+my $league = LoadFile 'league.yaml';
+$league;
+my @m;
+push @m, $m{$_} for sort keys %m;
+my $league->{member} = \@m;
+DumpFile 'league.yaml', $league;
