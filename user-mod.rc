@@ -10,7 +10,9 @@ $_REPL->load_plugin('DumpHistory');
 
 my $semester='052';
 my $school='must';
+my $city = "Hsinchu";
 my $league='MB2';
+my $course_id=4;
 
 use Grades;
 use Grades::Groupwork;
@@ -28,19 +30,24 @@ my %m = map { $_->{id} => $_ } @{ $l->members };
 #);
 my $approach = $l->approach;
 
-my $cohort_name = $league;
-my $header = join "\t", ( qw/username lastname firstname email password cohort1/ );
-my @cohort = ( $header );
-my @member = values %m;
-for my $id ( keys %m ) {
-	my $lower_id = lcfirst $id;
-	my $username = $lower_id;
-	my $lastname = $id;
-	my $firstname =$m{$id}->{name};
-	my $email = $m{$id}->{email};
-	my $password = $m{$id}->{password};
+my $user_list = qx/Moosh user-list --course $course_id/;
+my @user_list = split /\n/, $user_list;
+my @users;
+for my $user ( @user_list ) {
+	$user =~ m/^([a-z]\d*) \((\d*)\)/;
+	next unless $1 && $2;
+	push @users, {username => $1, id => $2};
+}
+
+my @mod;
+for my $user ( @users ) {
+	my $id = $user->{id};
+	my $schoolid = ucfirst $user->{username};
+	my $password = $m{$schoolid}->{password};
+	my $firstname = $m{$schoolid}->{name};
 	my $city = "Hsinchu";
-	system("Moosh user-mod --email $email $lower_id");
+	system("Moosh user-mod -i --firstname $firstname $id");
+	push @mod, {firstname => $firstname, id => $id};
 }
 
 
