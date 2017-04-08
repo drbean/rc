@@ -19,8 +19,13 @@ my $cl = $g->classwork;
 my %m = map { $_->{id} => $_ } @{ $l->members };
 my $approach = $l->approach;
 
-my ($gr, $bean_format) = LoadFile "exam/3/g.yaml";
-my %inc = map { $_ => $gr->{test}->{$_} - $gr->{base}->{$_} } keys %m;
+my ($gr, $bean_format) = LoadFile "exam/1/g1.yaml";
+my %inc;
+for my $player ( keys %m ) {
+	my $inc = $gr->{test}->{$player} - $gr->{base}->{$player};
+	if (defined $gr->{base}->{$player} and $inc > 0) { $inc{$player} = $inc }
+	else { $inc{player} = 0 }
+}
 $gr->{raw_increase} = \%inc;
 my $median = (sort {$a<=>$b} grep {$_ != 0} values %inc)[ (keys %m)/2 ];
 my $max_points = max values %inc;
@@ -44,6 +49,6 @@ my $check = sub {
 };
 $gr->{grade}->{$_} = $check->($_) for keys %m;
 
-DumpFile "exam/3/g.yaml", $gr;
+DumpFile "exam/1/g.yaml", $gr;
 
 # :dump ../../052/rc/memrise_grade.rc;
