@@ -22,9 +22,13 @@ my $approach = $l->approach;
 my ($gr, $bean_format) = LoadFile "exam/1/g1.yaml";
 my %inc;
 for my $player ( keys %m ) {
-	my $inc = $gr->{test}->{$player} - $gr->{base}->{$player};
-	if (defined $gr->{base}->{$player} and $inc > 0) { $inc{$player} = $inc }
-	else { $inc{player} = 0 }
+	my $base_report = defined $gr->{base}->{$player};
+	my $test_report = defined $gr->{test}->{$player} and
+		$gr->{test}->{$player} > 0;
+	if ($base_report and $test_report) = $inc }
+		$inc{$player} = $gr->{test}->{$player} - $gr->{base}->{$player};
+	elsif ($base_report) { $inc{$player} = 0 }
+	else { $inc{$player} = 0 }
 }
 $gr->{raw_increase} = \%inc;
 my $median = (sort {$a<=>$b} grep {$_ != 0} values %inc)[ (keys %m)/2 ];
