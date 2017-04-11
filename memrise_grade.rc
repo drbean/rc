@@ -20,23 +20,25 @@ my %m = map { $_->{id} => $_ } @{ $l->members };
 my $approach = $l->approach;
 
 my ($gr, $bean_format) = LoadFile "exam/1/g1.yaml";
-my %inc;
+my ( %inc, %base_report, %test_report );
 for my $player ( keys %m ) {
-	my $base_report = defined $gr->{base}->{$player};
-	my $test_report = defined $gr->{test}->{$player} and
-		$gr->{test}->{$player} > 0;
-	if ($base_report and $test_report) = $inc }
+	if ( defined $gr->{base}->{$player} and defined $gr->{test}->{$player} and
+			$gr->{test}->{$player} > 0 ) {
 		$inc{$player} = $gr->{test}->{$player} - $gr->{base}->{$player};
-	elsif ($base_report) { $inc{$player} = 0 }
+	}
+	elsif ( defined $gr->{base}->{$player} ) { $inc{$player} = 0 }
 	else { $inc{$player} = 0 }
 }
 $gr->{raw_increase} = \%inc;
-my $median = (sort {$a<=>$b} grep {$_ != 0} values %inc)[ (keys %m)/2 ];
+my @valid_scores = grep {$_ != 0} values %inc;
+my $median = (sort {$a<=>$b} @valid_scores)[ @valid_scores/2 ];
+# my $median = (sort {$a<=>$b} grep {$_ != 0} values %inc)[ (keys %m)/2 ];
+# my $median = (sort {$a<=>$b} values %inc)[ (keys %m)/2 ];
 my $max_points = max values %inc;
 my $check = sub {
 	my $player = shift();
-	my $max_points=52234;
-	if ( $gr->{base}->{$player} ) {
+	my $max_points = shift();
+	if ( defined $gr->{base}->{$player} ) {
 		if ( $gr->{raw_increase}->{$player} > $median ) {
 			$gr->{grade}->{$player} =  sprintf( "%.2f", 4 + 0.8 *
 				($gr->{raw_increase}->{$player} - $median) /
@@ -51,8 +53,8 @@ my $check = sub {
 		}
 	}
 };
-$gr->{grade}->{$_} = $check->($_) for keys %m;
+$gr->{grade}->{$_} = $check->($_, $max_points) for keys %m;
 
-DumpFile "exam/1/g.yaml", $gr;
+DumpFile "exam/1/gr.yaml", $gr;
 
 # :dump ../../052/rc/memrise_grade.rc;
