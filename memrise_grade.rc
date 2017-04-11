@@ -40,7 +40,7 @@ my $check = sub {
 	my $max_points = shift();
 	if ( defined $gr->{base}->{$player} ) {
 		if ( $gr->{raw_increase}->{$player} > $median ) {
-			$gr->{grade}->{$player} =  sprintf( "%.2f", 4 + 0.8 *
+			$gr->{grade}->{$player} =  sprintf( "%.2f", 4 + 1 *
 				($gr->{raw_increase}->{$player} - $median) /
 					($max_points - $median) );
 		}
