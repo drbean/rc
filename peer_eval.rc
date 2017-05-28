@@ -1,0 +1,130 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use IO::All;
+use YAML::XS qw/LoadFile DumpFile/;
+use Cwd;
+
+$_REPL->load_plugin('DumpHistory');
+
+(my $dir = getcwd) =~ s/^.*\/([^\/]*)$/$1/;
+use Grades;
+use Grades::Groupwork;
+my $l = League->new( leagues => '/home/drbean/052', id => $dir );
+my $g = Grades->new({ league => $l });
+my $co = Compcomp->new({ league => $l });
+my $cl = $g->classwork;
+my %m = map { $_->{id} => $_ } @{ $l->members };
+my $approach = $l->approach;
+
+my $g1 = LoadFile 'exam/3/g1.yaml';
+my $g2 = LoadFile 'exam/3/g2.yaml';
+my $g3 = LoadFile 'exam/3/g3.yaml';
+
+my $fishing = $g3->{fishing};
+my $house = $g3->{house};
+my ( $fishing_evaluators, $house_evaluators );
+my ( $fishing_evaluees, $house_evaluees );
+
+for my $evaluator ( keys %m ) {
+	if ( exists $g3->{fishing}->{$evaluator} ) {
+		my $evaluation = $fishing->{$evaluator};
+		my $evaluee = ( keys %$evaluation )[0];
+		$fishing_evaluators->{$evaluator}->{drbean} = $g2->{grade}->{$evaluee};
+		$fishing_evaluators->{$evaluator}->{$evaluee} = $g3->{fishing}->{$evaluator}->{$evaluee};
+	}
+	else {
+		$fishing_evaluators->{$evaluator} = undef;
+	}
+}
+
+for my $evaluator ( keys %m ) {
+	if ( exists $g3->{house}->{$evaluator} ) {
+		my $evaluation = $house->{$evaluator};
+		my $evaluee = ( keys %$evaluation )[0];
+		$house_evaluators->{$evaluator}->{drbean} = $g1->{grade}->{$evaluee};
+		$house_evaluators->{$evaluator}->{$evaluee} = $g3->{house}->{$evaluator}->{$evaluee};
+	}
+	else {
+		$house_evaluators->{$evaluator} = undef;
+	}
+}
+
+for my $evaluator ( keys %m ) {
+	if ( exists $g3->{fishing}->{$evaluator} ) {
+		my $evaluation = $fishing->{$evaluator};
+		my $evaluee = ( keys %$evaluation )[0];
+		$fishing_evaluees->{$evaluee}->{drbean} = $g2->{grade}->{$evaluee};
+		$fishing_evaluees->{$evaluee}->{$evaluator} = $g3->{fishing}->{$evaluator}->{$evaluee};
+	}
+	else {
+		$fishing_evaluators->{$evaluator} = undef;
+	}
+}
+
+for my $evaluator ( keys %m ) {
+	if ( exists $g3->{house}->{$evaluator} ) {
+		my $evaluation = $house->{$evaluator};
+		my $evaluee = shift @{[ keys %$evaluation ]};
+		$house_evaluees->{$evaluee}->{drbean} = $g1->{grade}->{$evaluee};
+		$house_evaluees->{$evaluee}->{$evaluator} = $g3->{house}->{$evaluator}->{$evaluee}
+	}
+	else {
+		$house_evaluators->{$evaluator} = undef;
+	}
+}
+
+my %evaluators = map { $_ => { house => $house_evaluators->{$_}, fishing => $fishing_evaluators->{$_} } } keys %m;
+my %evaluees = map { $_ => { house => $house_evaluees->{$_}, fishing => $fishing_evaluees->{$_} } } keys %m;
+
+$g3->{evaluators} = \%evaluators;
+$g3->{evaluees} = \%evaluees;
+
+# #my %fishing_evals = map { my $evaler = $_ , ;
+# #my %fishing_evaluating = map { my $evaler = $_ ,  } keys %fishing_gradedb;
+# #my %fishing_evaluating = map { my $evaler = $_ , $g3->{fishing}->{$_} })[0] } keys %m;
+# my %fishing_evaluating = map {  $_ => ( keys %{$g3->{fishing}->{$_} })[0] } keys %m;
+# #my %fishing_evaluating = map {  $_ => ( keys %{$g3->{fishing}->{$_} })[0] } keys %m;
+# \%fishing_evaluating;
+#  %fishing_evaluating = map {  $_ => shift ( keys %{$g3->{fishing}->{$_} }) } keys %m;
+#  %fishing_evaluating = map {  $_ =>  ( keys %{$g3->{fishing}->{$_} }) } keys %m;
+# \%fishing_evaluating;
+# #my %fishing_evaluating = map {  $_ => ( keys %{$g3->{fishing}->{$_} })[0] } keys %m;
+# $g3->{fishing}->{N05202201};
+# keys %{ $g3->{fishing}->{N05202201} };
+#  %fishing_evaluating = map {  $_ =>  keys %{$g3->{fishing}->{$_} } } keys %m;
+# $g3->{fishing}->{N05202201};
+# keys %{ $g3->{fishing}->{N05202201} };
+# (keys %{ $g3->{fishing}->{N05202201} } )[0];
+# shift (keys %{ $g3->{fishing}->{N05202201} } );
+# %fishing_evaluating;
+# \%fishing_evaluating;
+#  %fishing_evaluating = map {  $_ =>  keys %{$g3->{fishing}->{$_} } } keys %{$g3->{fishing}};
+# \%fishing_evaluating;
+#  %fishing_evaluating = map {  $_ => ( keys %{$g3->{fishing}->{$_} })[0] } keys %{ $g3->{fishing} };
+# \%fishing_evaluating;
+# keys %{ $g3->{fishing} };
+# sort keys %{ $g3->{fishing} };
+# undef %fishing_evaluating ;
+# \%fishing_evaluating;
+#  %fishing_evaluating = map {  $_ => ( keys %{$g3->{fishing}->{$_} })[0] } keys %{ $g3->{fishing} };
+# \%fishing_evaluating;
+# my $fishing = $g3->{fishing};
+# delete $fishing->{$_} unless $fishing->{$_} for keys %$fishing;
+# my $g3 = LoadFile 'exam/3/g3.yaml';
+# my $fishing = $g3->{fishing};
+# my %fishing_evaluer2evaluee = map {  $_ => ( keys %{$g3->{fishing}->{$_} })[0] } keys %{ $g3->{fishing} };
+# #my %fishing_evaluer2evaluee = map {  $_ => ( keys %{$g3->{fishing}->{$_} })[0] } keys %{ $g3->{fishing} };
+# \%fishing_evaluer2evaluee;
+# my $g3 = LoadFile 'exam/3/g3.yaml';
+# \%fishing_evaluer2evaluee;
+# my $house = $g3->{house};
+# #my %fishing_evaluer2evaluee = map {  $_ => ( keys %{$g3->{fishing}->{$_} })[0] } keys %{ $g3->{fishing} };
+# my %house_evaluer2evaluee = map { $_ => ( keys %${ $house->{$_} } )[0] } keys %$house;
+# my %house_evaluer2evaluee = map { $_ => ( keys %{ $house->{$_} } )[0] } keys %$house;
+# \%house_evaluer2evaluee;
+# #my %house_grades = map { $house_evaluer2evaluee{$_} => ;
+# $_REPL->load_plugin("DumpHistory");
+# :dump ~/052/rc/peer_eval.rc;
+# :dump ../rc/peer_eval.rc;
