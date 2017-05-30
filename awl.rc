@@ -6,12 +6,17 @@ use IO::All;
 use YAML::XS qw/LoadFile DumpFile/;
 use Cwd;
 
-$_REPL->load_plugin('DumpHistory');
+# $_REPL->load_plugin('DumpHistory');
 
 my @three = glob 'academic/3/*.txt';
 my @word;
 ($word[$_] = $three[$_]) =~ s|academic/3/(.*).txt|$1| for ( 0 .. $#three );
 my @text;
-for my $i ( 0 .. $#three ) { push @text, $word[$i] . ": " . io->file( $three[$i] )->slurp };
+for my $i ( 0 .. $#three ) {
+	my $definition = io->file( $three[$i] )->slurp;
+	$definition =~ s/\n//mg;
+	$definition =~ s/\s+(?=\s)//g;
+	push @text, "$word[$i]: $definition\n";
+}
 io("academic/three.yaml")->print(@text);
 # my $three = LoadFile 'academic/three.yaml';
