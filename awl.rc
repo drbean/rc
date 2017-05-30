@@ -8,10 +8,10 @@ use Cwd;
 
 $_REPL->load_plugin('DumpHistory');
 
-my @two = glob 'academic/2/*.txt';
+my @three = glob 'academic/3/*.txt';
 my @word;
-($word[$_] = $two[$_]) =~ s|academic/2/(.*).txt|$1| for ( 0 .. $#two );
+($word[$_] = $three[$_]) =~ s|academic/3/(.*).txt|$1| for ( 0 .. $#three );
 my @text;
-for my $i ( 0 .. $#two ) { push @text, $word[$i] . ": " . io->file( $two[$i] )->slurp };
-io("academic/two.yaml")->print(@text);
-# my $two = LoadFile 'academic/two.yaml';
+for my $i ( 0 .. $#three ) { push @text, $word[$i] . ": " . io->file( $three[$i] )->slurp };
+io("academic/three.yaml")->print(@text);
+# my $three = LoadFile 'academic/three.yaml';
