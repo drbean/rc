@@ -8,15 +8,16 @@ use Cwd;
 
 # $_REPL->load_plugin('DumpHistory');
 
-my @three = glob 'academic/3/*.txt';
+my @input = glob 'academic/1/*.txt';
+my $output = "academic/one.yaml";
 my @word;
-($word[$_] = $three[$_]) =~ s|academic/3/(.*).txt|$1| for ( 0 .. $#three );
+($word[$_] = $input[$_]) =~ s|academic/1/(.*).txt|$1| for ( 0 .. $#input );
 my @text;
-for my $i ( 0 .. $#three ) {
-	my $definition = io->file( $three[$i] )->slurp;
+for my $i ( 0 .. $#input ) {
+	my $definition = io->file( $input[$i] )->slurp;
 	$definition =~ s/\n//mg;
 	$definition =~ s/\s+(?=\s)//g;
 	push @text, "$word[$i]: $definition\n";
 }
-io("academic/three.yaml")->print(@text);
-# my $three = LoadFile 'academic/three.yaml';
+io($output)->print(@text);
+# my $input = LoadFile $output;
