@@ -9,10 +9,10 @@ use Cwd;
 $_REPL->load_plugin('DumpHistory');
 
 my $semester='052';
-my $school='must';
-my $city = "Hsinchu";
-my $league='MB2';
-my $course_id=4;
+my $school='nuu';
+my $city = "Miaoli";
+my $league='FLA0010';
+my $course_id=8;
 
 use Grades;
 use Grades::Groupwork;
@@ -45,7 +45,7 @@ for my $user ( @users ) {
 	my $schoolid = ucfirst $user->{username};
 	my $password = $m{$schoolid}->{password};
 	my $firstname = $m{$schoolid}->{name};
-	my $city = "Hsinchu";
+	my $city = "Miaoli";
 	system("Moosh user-mod -i --firstname $firstname $id");
 	push @mod, {firstname => $firstname, id => $id};
 }
