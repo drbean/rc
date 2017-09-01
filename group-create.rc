@@ -1,0 +1,29 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use IO::All;
+use YAML::XS qw/LoadFile DumpFile Dump/;
+use Cwd;
+
+$_REPL->load_plugin('DumpHistory');
+
+# my $semester=$ENV{SEMESTER};
+my $semester='051';
+my $school='nuu';
+my $league='FLA0015';
+my $course_id = 4;
+
+use Grades;
+my $l = League->new( leagues => "/home/drbean/$semester", id => $league );
+my $g = Grades->new({ league => $l });
+my $cl = $g->classwork;
+my $lastweek = $cl->lastweek + 1;
+my $session = $cl->week2session($lastweek);
+my $beancans = $cl->beancans($session);
+my @groups = keys %$beancans;
+for my $group ( @groups ) {
+	system("Moosh group-create \"$session-$group\" $course_id");
+}
+
+
