@@ -8,7 +8,7 @@ use Cwd;
 
 $_REPL->load_plugin('DumpHistory');
 
-my $semester="${SEMESTER}";
+my $semester="$ENV{SEMESTER}";
 my $school='must';
 my $league='MB2';
 

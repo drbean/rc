@@ -8,7 +8,7 @@ use Cwd;
 
 $_REPL->load_plugin('DumpHistory');
 
-my $semester="${SEMESTER}";
+my $semester="$ENV{SEMESTER}";
 my $school='nuu';
 
 (my $dir = getcwd) =~ s/^.*\/([^\/]*)$/$1/;
