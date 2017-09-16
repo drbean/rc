@@ -8,11 +8,11 @@ use Cwd;
 
 $_REPL->load_plugin('DumpHistory');
 
-# my $semester=$ENV{SEMESTER};
-my $semester='061';
+my $semester=$ENV{SEMESTER};
+# my $semester='061';
 my $school='must';
-my $league='2L1b';
-my $course_id = 20;
+my $league='251';
+my $course_id = 18;
 
 use Grades;
 my $l = League->new( leagues => "/home/drbean/$semester", id => $league );
