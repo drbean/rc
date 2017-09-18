@@ -10,7 +10,7 @@ $_REPL->load_plugin('DumpHistory');
 
 my $semester="$ENV{SEMESTER}";
 my $school='must';
-my $league='2L1b';
+my $league='251';
 
 use Grades;
 use Grades::Groupwork;
