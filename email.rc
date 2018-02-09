@@ -18,7 +18,8 @@ my $cl = $g->classwork;
 my %m = map { $_->{id} => $_ } @{ $l->members };
 my $approach = $l->approach;
 
-my $e = LoadFile 'email.yaml';
+my $school = $l->yaml->{school};
+my $e = LoadFile "~/admin/$ENV{SEMESTER}/$school/${dir}_email.yaml";
 my $dupe = grep { exists $e->{$_} } keys %m;
 $m{$_}->{email} = $e->{$_} for (keys %m) ;
 scalar keys %m;
