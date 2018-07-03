@@ -1,0 +1,17 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use IO::All;
+use YAML qw/LoadFile DumpFile/;
+use Cwd;
+
+use List::Util 'max';
+
+my $g1;
+$g1->[$_] = LoadFile "exam/5/trigger_$_.yaml" for 0..11;
+my %g1 = map { my $player = $_ ; $player => max( map  { $_->{$player} } @$g1 ) }  keys %{ $g1->[0] };
+DumpFile 'exam/5/g1.yaml.orig', \%g1;
+
+# $_REPL->load_plugin('DumpHistory');
+# :dump ../rc/score_moodle_jigsaw.rc;
