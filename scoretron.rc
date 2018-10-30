@@ -1,0 +1,24 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use IO::All;
+use YAML::XS qw/LoadFile DumpFile/;
+use Cwd;
+
+use Grades;
+use Grades::Groupwork;
+(my $dir = getcwd) =~ s/^.*\/([^\/]*)$/$1/;
+my $l = League->new( leagues => "/home/drbean/$ENV{SEMESTER}", id => $dir );
+my $g = Grades->new({ league => $l });
+my $co = Compcomp->new({ league => $l });
+my $cl = $g->classwork;
+my %m = map { $_->{id} => $_ } @{ $l->members };
+my $approach = $l->approach;
+
+my $r = LoadFile 'exam/2/round.yaml';
+
+my %n2m = map {$m{$_}->{name} =>$m{$_} } keys %m;
+my $can = $r->{group};
+my @ids = map { $_ => [ map { $n2m{$_}->{id} } @{ $can->{$_} } ] } keys %$can;
+DumpFile 'exam/2/member.yaml', \@ids;
