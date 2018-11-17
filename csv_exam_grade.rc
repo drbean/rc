@@ -10,7 +10,7 @@ $_REPL->load_plugin('DumpHistory');
 
 (my $dir = getcwd) =~ s/^.*\/([^\/]*)$/$1/;
 
-my $exam = 3;
+my $exam = 2;
 
 use Grades;
 use Grades::Groupwork;
@@ -24,10 +24,10 @@ my $approach = $l->approach;
 my $gyaml = LoadFile "exam/$exam/g.yaml";
 my $io = io "exam/$exam/$exam.csv";
 # my %gemail = map { $m{$_}->{email} => $gyaml->{$_} } keys %m;
-my $gcsv = map {$_ => 20 * $gyaml->{$_} } keys %m;
-my @lines ; push @lines , "$_,\t", 20 * $gcsv{$_} for keys %m;
-# $io->print("\"Email address\",title");
-$io->print("\"idnumber\",title");
-$,="\n";
+my %gcsv = map {$_ => 20 * $gyaml->{$_} } keys %m;
+my @lines ; push @lines , "$_,\t", $gcsv{$_} . "\n" for keys %m;
+# $io->print("\"Email address\",title\n");
+$io->print("\"ID number\",exam$exam\n");
+# $,="\n";
 $io->append(@lines);
 $io->close;
