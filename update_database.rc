@@ -1,0 +1,25 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use IO::All;
+use YAML::XS qw/LoadFile DumpFile/;
+use Cwd;
+
+$_REPL->load_plugin('DumpHistory');
+
+(my $dir = getcwd) =~ s/^.*\/([^\/]*)$/$1/;
+
+my $ung = qx"~/dot/postgres/db/script/db bett -p 5434 -d bett071  -t question -a select -k league,grammatical,exercise  -v B91,false,all -s quoted";
+my $gr = qx"~/dot/postgres/db/script/db bett -p 5434 -d bett071  -t question -a select -k grammatical,exercise  -v true,all -s quoted";
+my @ung = split /\n/, $ung;
+my @gr = split /\n/, $gr;
+my @quot = grep { s/^B91,false,all\t(.*)$/$1/ } @ung;
+my @parse ;
+foreach ( @quot ) {
+	my $response = qx" echo $_ | /var/www/cgi-bin/bett/bin/Transfer_all";
+	if ( $response =~ m/QUt/ ) {
+		push @parse, $_;
+	}
+	else { push @parse, "Ungrammatical"; }
+};
