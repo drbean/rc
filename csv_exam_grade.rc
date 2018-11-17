@@ -1,0 +1,33 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use IO::All;
+use YAML::XS qw/LoadFile DumpFile/;
+use Cwd;
+
+$_REPL->load_plugin('DumpHistory');
+
+(my $dir = getcwd) =~ s/^.*\/([^\/]*)$/$1/;
+
+my $exam = 3;
+
+use Grades;
+use Grades::Groupwork;
+my $l = League->new( leagues => "/home/drbean/$ENV{SEMESTER}", id => $dir );
+my $g = Grades->new({ league => $l });
+my $co = Compcomp->new({ league => $l });
+my $cl = $g->classwork;
+my %m = map { $_->{id} => $_ } @{ $l->members };
+my $approach = $l->approach;
+
+my $gyaml = LoadFile "exam/$exam/g.yaml";
+my $io = io "exam/$exam/$exam.csv";
+# my %gemail = map { $m{$_}->{email} => $gyaml->{$_} } keys %m;
+my $gcsv = map {$_ => 20 * $gyaml->{$_} } keys %m;
+my @lines ; push @lines , "$_,\t", 20 * $gcsv{$_} for keys %m;
+# $io->print("\"Email address\",title");
+$io->print("\"idnumber\",title");
+$,="\n";
+$io->append(@lines);
+$io->close;
