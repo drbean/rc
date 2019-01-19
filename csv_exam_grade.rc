@@ -14,7 +14,8 @@ my $exam = 6;
 
 use Grades;
 use Grades::Groupwork;
-my $l = League->new( leagues => "/home/drbean/$ENV{SEMESTER}", id => $dir );
+# my $l = League->new( leagues => "/home/drbean/$ENV{SEMESTER}", id => $dir );
+my $l = League->new( leagues => "/home/drbean/$ENV{SEMESTER}", id => '2L1' );
 my $g = Grades->new({ league => $l });
 my $co = Compcomp->new({ league => $l });
 my $cl = $g->classwork;
