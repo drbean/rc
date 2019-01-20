@@ -15,7 +15,7 @@ my $exam = 6;
 use Grades;
 use Grades::Groupwork;
 # my $l = League->new( leagues => "/home/drbean/$ENV{SEMESTER}", id => $dir );
-my $l = League->new( leagues => "/home/drbean/$ENV{SEMESTER}", id => '2L1' );
+my $l = League->new( leagues => "/home/drbean/$ENV{SEMESTER}", id => 'B91' );
 my $g = Grades->new({ league => $l });
 my $co = Compcomp->new({ league => $l });
 my $cl = $g->classwork;
@@ -23,11 +23,12 @@ my %m = map { $_->{id} => $_ } @{ $l->members };
 my $approach = $l->approach;
 
 my $gyaml = LoadFile "exam/$exam/g.yaml";
-my $io = io "exam/$exam/$exam.csv";
+my $io = io "exam/$exam/g.csv";
 # my %gemail = map { $m{$_}->{email} => $gyaml->{$_} } keys %m;
 my %gcsv = map {$_ => 20 * $gyaml->{$_} } keys %m;
 my @lines ; push @lines , "$m{$_}->{email},\t", $gcsv{$_} . "\n" for keys %m;
-$io->print("\"Email address\",title\n");
+$io->print("\"Email address\",exam$exam\n");
+# for gradebook-import -u idnumber
 # $io->print("\"ID number\",exam$exam\n");
 # $,="\n";
 $io->append(@lines);
