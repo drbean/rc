@@ -1,0 +1,22 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use IO::All;
+use YAML::XS qw/LoadFile DumpFile/;
+use Cwd; use File::Basename;
+
+$_REPL->load_plugin('DumpHistory');
+
+(my $dir = getcwd) =~ s/^.*\/([^\/]*)$/$1/;
+
+my $topic = 'invitation';
+
+my $yaml = LoadFile "$topic/cards.yaml";
+my @story = keys %$yaml;
+my %story = map { $_ => $yaml->{$_} } @story;
+my %type = map { my $story = $yaml->{$_} ; $_ => [keys %$story] } @story;
+my %form = map { my $story = $yaml->{$_} ; $_ =>
+	{ map {my $type = $story->{$_}; 
+			$_ => [keys %$type] } keys %$story } } @story;
+
