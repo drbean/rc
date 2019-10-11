@@ -1,0 +1,26 @@
+#!/usr/bin/perl
+
+use strict;
+use warnings;
+use IO::All;
+use YAML::XS qw/LoadFile DumpFile/;
+use Cwd;
+
+$_REPL->load_plugin('DumpHistory');
+
+(my $dir = getcwd) =~ s/^.*\/([^\/]*)$/$1/;
+use Grades;
+my $l = League->new( leagues => "/home/drbean/$ENV{SEMESTER}", id => $dir );
+my $m = $l->members;
+my %m = map { $_->{name} => $_ } @$m;
+
+my $y = LoadFile 'classwork/3.yaml';
+my %scores;
+@scores{ keys %$_ } = values %$_ for values %$y;
+my %grade;
+$grade{$m{$_}->{id} } = $scores{$_} for keys %scores;
+
+my $io = io 'classwork/3.csv';
+$io->print( '"ID number","Quiz: ' . 'Saying something about letters' . ' (Real)"' . "\n" );
+$io->append( "$_,$grade{$_}\n") for keys %grade;
+$io->autoflush;
