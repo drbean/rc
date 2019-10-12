@@ -21,6 +21,6 @@ my %grade;
 $grade{$m{$_}->{id} } = $scores{$_} for keys %scores;
 
 my $io = io 'classwork/3.csv';
-$io->print( '"ID number","Quiz: ' . 'Saying something about letters' . ' (Real)"' . "\n" );
+$io->print( '"ID number","Quiz: Saying something about letters"' . "\n" );
 $io->append( "$_,$grade{$_}\n") for keys %grade;
 $io->autoflush;
